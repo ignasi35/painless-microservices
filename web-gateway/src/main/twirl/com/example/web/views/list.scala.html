@@ -1,4 +1,5 @@
-@import com.example.web.controllers._
+@import com.example.web.controllers.SearchForm
+@import com.example.web.controllers.routes.Main
 @import com.example.search.api.ListingSearchResult
 @import views.html.helper._
 
@@ -23,12 +24,13 @@
                         </div>
                         <div class="listing-name">@listing.listingName</div>
                         <div class="listing-price"><strong>@Messages("price"):</strong> @Messages("priceFormat", listing.price)</div>
-                        @form(routes.Main.book) {
+                        @form(Main.book) {
+                            @CSRF.formField
                             <input type="hidden" name="listingId" value="@listing.listingId"/>
                             <input type="hidden" name="checkin" value="@searchForm.checkin"/>
                             <input type="hidden" name="checkout" value="@searchForm.checkout"/>
                             <input type="submit" value="@Messages("bookNow")" class="button"/>
-                            <a href="@routes.Main.reservations(listing.listingId)">@Messages("viewReservations")</a>
+                            <a href="@Main.reservations(listing.listingId)">@Messages("viewReservations")</a>
                         }
                     </div>
                 </div>

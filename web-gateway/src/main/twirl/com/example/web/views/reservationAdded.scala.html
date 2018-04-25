@@ -1,5 +1,6 @@
 @import com.example.reservation.api.ReservationAdded
 @import com.example.web.controllers._
+@import com.example.web.controllers.routes.Main
 
 @(added: ReservationAdded)(implicit rh: RequestHeader, messages: Messages)
 
@@ -8,6 +9,6 @@
 
     <p>@Messages("reservationAddedDescription")</p>
 
-    <p><a href="@routes.Main.reservations(added.listingId)">@Messages("viewReservationsForListing")</a></p>
-    <p><a href="@routes.Main.index()">@Messages("backToSearch")</a></p>
+    <p><a href="@Main.reservations(added.listingId)">@Messages("viewReservationsForListing")</a></p>
+    <p><a href="@Main.index()">@Messages("backToSearch")</a></p>
 }

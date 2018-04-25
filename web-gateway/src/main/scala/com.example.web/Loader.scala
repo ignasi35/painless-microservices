@@ -2,17 +2,18 @@ package com.example.web
 
 import com.example.reservation.api.ReservationService
 import com.example.search.api.SearchService
-import _root_.controllers.Assets
+import _root_.controllers.AssetsComponents
 import com.example.web.controllers.Main
 import com.lightbend.lagom.scaladsl.api.ServiceLocator.NoServiceLocator
-import com.lightbend.lagom.scaladsl.api.{ServiceAcl, ServiceInfo}
+import com.lightbend.lagom.scaladsl.api.{ LagomConfigComponent, ServiceAcl, ServiceInfo }
 import com.lightbend.lagom.scaladsl.client.LagomServiceClientComponents
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
 import com.softwaremill.macwire._
 import play.api.ApplicationLoader.Context
 import play.api.i18n.I18nComponents
 import play.api.libs.ws.ahc.AhcWSComponents
-import play.api.{ApplicationLoader, BuiltInComponentsFromContext, Mode}
+import play.api.{ ApplicationLoader, BuiltInComponentsFromContext, Mode }
+import play.filters.HttpFiltersComponents
 
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
@@ -20,7 +21,10 @@ import scala.concurrent.ExecutionContext
 abstract class WebGateway(context: Context) extends BuiltInComponentsFromContext(context)
   with I18nComponents
   with AhcWSComponents
-  with LagomServiceClientComponents {
+  with AssetsComponents
+  with HttpFiltersComponents
+  with LagomServiceClientComponents
+  with LagomConfigComponent {
 
   override lazy val serviceInfo: ServiceInfo = ServiceInfo(
     "web-gateway",
@@ -38,7 +42,6 @@ abstract class WebGateway(context: Context) extends BuiltInComponentsFromContext
   lazy val reservationService = serviceClient.implement[ReservationService]
 
   lazy val main = wire[Main]
-  lazy val assets = wire[Assets]
 }
 
 class WebGatewayLoader extends ApplicationLoader {

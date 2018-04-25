@@ -1,4 +1,5 @@
-@import com.example.web.controllers._
+@import com.example.web.controllers.SearchForm
+@import com.example.web.controllers.routes.Main
 @import views.html.helper._
 
 @(searchForm: Form[SearchForm])(implicit rh: RequestHeader, messages: Messages)
@@ -6,7 +7,7 @@
 @main(Messages("holidayListings")) {
     <h2>@Messages("holidayListings")</h2>
 
-    @foundationForm(searchForm, routes.Main.search()) {
+    @foundationForm(searchForm, Main.search()) {
         <div class="row">
             <div class="medium-6 columns">
             @inputText(searchForm("checkin"))

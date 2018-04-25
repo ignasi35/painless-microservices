@@ -2,13 +2,11 @@ package com.example.reservation.impl
 
 import java.util.UUID
 
-import akka.stream.scaladsl.Source
 import com.example.reservation.api
 import com.example.reservation.api.ReservationService
-import com.example.reservation.impl.crud.{ReservationDao, ReservationPublisher}
 import com.lightbend.lagom.scaladsl.api.ServiceCall
 import com.lightbend.lagom.scaladsl.broker.TopicProducer
-import com.lightbend.lagom.scaladsl.persistence.{EventStreamElement, PersistentEntityRef, PersistentEntityRegistry}
+import com.lightbend.lagom.scaladsl.persistence.{ EventStreamElement, PersistentEntityRef, PersistentEntityRegistry }
 
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
@@ -16,8 +14,7 @@ import scala.concurrent.ExecutionContext
 /**
   * Implementation of the ReservationService.
   */
-class ReservationServiceImpl(dao: ReservationDao, reservationPublisher: ReservationPublisher,
-  persistentEntityRegistry: PersistentEntityRegistry)(implicit ec: ExecutionContext) extends ReservationService {
+class ReservationServiceImpl(persistentEntityRegistry: PersistentEntityRegistry)(implicit ec: ExecutionContext) extends ReservationService {
 
   private def reservationEntity(listingId: UUID): PersistentEntityRef[ReservationCommand[_]] = {
     persistentEntityRegistry.refFor[ReservationEntity](listingId.toString)
