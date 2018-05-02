@@ -7,15 +7,14 @@ import play.api.libs.ws.ahc.AhcWSComponents
 import com.example.search.api.SearchService
 import com.example.reservation.api.ReservationService
 import com.lightbend.lagom.scaladsl.broker.kafka.LagomKafkaClientComponents
+import com.lightbend.rp.servicediscovery.lagom.scaladsl.LagomServiceLocatorComponents
 import com.softwaremill.macwire._
 import play.api.LoggerConfigurator
 
 class SearchLoader extends LagomApplicationLoader {
 
   override def load(context: LagomApplicationContext): LagomApplication =
-    new SearchApplication(context) {
-      override def serviceLocator = NoServiceLocator
-    }
+    new SearchApplication(context) with LagomServiceLocatorComponents
 
   override def loadDevMode(context: LagomApplicationContext): LagomApplication =
     new SearchApplication(context) with LagomDevModeComponents

@@ -6,58 +6,54 @@ scalaVersion in ThisBuild := "2.12.4"
 
 val macwire = "com.softwaremill.macwire" %% "macros" % "2.2.5" % "provided"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.1" % Test
-
-lagomCassandraEnabled in ThisBuild := false
+val lombok = "org.projectlombok" % "lombok" % "1.16.12"
 
 lazy val `holiday-listing` = (project in file("."))
-  .aggregate(`reservation-api`, `reservation-impl`, `search-api`, `search-impl`)
+  .aggregate(`reservation-api`, `reservation-impl`, `search-api`, `search-impl`, `web-gateway`)
 
 lazy val `reservation-api` = (project in file("reservation-api"))
   .settings(
     libraryDependencies ++= Seq(
-      lagomScaladslApi
+      lagomJavadslApi,
+      lagomJavadslJackson,
+      lombok
     )
   )
 
 lazy val `reservation-impl` = (project in file("reservation-impl"))
-  .enablePlugins(LagomScala)
+  .enablePlugins(LagomJava, SbtReactiveAppPlugin)
   .settings(
     libraryDependencies ++= Seq(
-      lagomScaladslPersistenceJdbc,
-      "com.h2database" % "h2" % "1.4.196",
-      lagomScaladslKafkaBroker,
-      lagomScaladslPubSub,
-      lagomScaladslTestKit,
-      macwire,
-      scalaTest
+      lagomJavadslPersistenceCassandra,
+      lagomJavadslKafkaBroker,
+      lagomJavadslTestKit
     )
   )
   .settings(lagomForkedTestSettings: _*)
-  .dependsOn(`reservation-api`, `search-api`)
+  .dependsOn(`reservation-api`)
+
 
 lazy val `search-api` = (project in file("search-api"))
   .settings(
     libraryDependencies ++= Seq(
       lagomScaladslApi
     )
-  ).dependsOn(`reservation-api`)
+  )
 
 lazy val `search-impl` = (project in file("search-impl"))
-  .enablePlugins(LagomScala)
+  .enablePlugins(LagomScala, SbtReactiveAppPlugin)
   .settings(
     libraryDependencies ++= Seq(
-      lagomScaladslTestKit,
       lagomScaladslKafkaClient,
-      macwire,
-      scalaTest
+      macwire
     )
   )
-  .dependsOn(`search-api`, `reservation-api`)
+  .dependsOn(`search-api`)
 
 lazy val `web-gateway` = (project in file("web-gateway"))
-  .enablePlugins(PlayScala && LagomPlay)
+  .enablePlugins(PlayScala && LagomPlay && SbtReactiveAppPlugin)
   .disablePlugins(PlayLayoutPlugin, PlayFilters)
-  .dependsOn(`reservation-api`, `search-api`)
+  .dependsOn(`search-api`)
   .settings(
     version := "1.0-SNAPSHOT",
     libraryDependencies ++= Seq(
@@ -68,7 +64,7 @@ lazy val `web-gateway` = (project in file("web-gateway"))
       "org.webjars" % "foundation" % "6.2.3",
       "org.webjars" % "foundation-icon-fonts" % "d596a3cfb3"
     ),
-    lagomWatchDirectories ++= (sourceDirectories in (Compile, TwirlKeys.compileTemplates)).value
-  )
+    lagomWatchDirectories ++= (sourceDirectories in(Compile, TwirlKeys.compileTemplates)).value,
+    httpIngressPaths := Seq("/")
 
-lagomCassandraEnabled in ThisBuild := false
+  )

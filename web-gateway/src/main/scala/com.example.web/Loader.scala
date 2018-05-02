@@ -8,6 +8,7 @@ import com.lightbend.lagom.scaladsl.api.ServiceLocator.NoServiceLocator
 import com.lightbend.lagom.scaladsl.api.{ LagomConfigComponent, ServiceAcl, ServiceInfo }
 import com.lightbend.lagom.scaladsl.client.LagomServiceClientComponents
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
+import com.lightbend.rp.servicediscovery.lagom.scaladsl.LagomServiceLocatorComponents
 import com.softwaremill.macwire._
 import play.api.ApplicationLoader.Context
 import play.api.i18n.I18nComponents
@@ -49,8 +50,6 @@ class WebGatewayLoader extends ApplicationLoader {
     case Mode.Dev =>
       new WebGateway(context) with LagomDevModeComponents {}.application
     case _ =>
-      new WebGateway(context) {
-        override def serviceLocator = NoServiceLocator
-      }.application
+      new WebGateway(context) with LagomServiceLocatorComponents {}.application
   }
 }
